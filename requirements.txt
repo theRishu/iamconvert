@@ -1,0 +1,16 @@
+aiogram>=3.7.0
+Pillow>=10.0.0
+numpy>=1.24.0
+img2pdf>=0.5.0
+pdf2image>=1.17.0
+pytesseract>=0.3.10
+pypdf>=4.0.0
+yt-dlp>=2024.1.0
+rarfile>=4.1
+requests>=2.31.0
+segno>=1.6.1
+python-dotenv>=1.0.0
+# Optional — install separately when needed:
+# rembg>=2.0.50        (remove background AI — heavy ~170 MB model)
+# pyzbar>=0.1.9        (QR reading — needs: brew install zbar)
+# opencv-python-headless>=4.8.0  (QR reading alternative)

@@ -1,0 +1,89 @@
+iamconvert — Telegram Media Converter Bot (Full Feature Edition)
+================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ FORMAT CONVERSION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+VIDEO
+  MP4 ↔ AVI, MKV, MOV, WEBM
+  Any video → GIF
+  Any video → MP3, WAV, OGG, FLAC, AAC, M4A  (audio extract)
+
+AUDIO
+  MP3 ↔ WAV, OGG, FLAC, AAC, M4A
+  Voice message → MP3 / WAV
+
+IMAGE
+  JPG / PNG / WEBP / BMP / TIFF ↔ any of the above
+  Any image → ICO, PDF
+  Any image → Telegram Sticker (512×512 WEBP, transparent)
+
+DOCUMENT
+  PDF → JPG images per page (sent as ZIP)
+  JPG / PNG images → PDF
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ VIDEO TOOLS  (/trim, /compress, /merge, /screenshot, /watermark, /speed, /subtitle)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✂️  Trim        Cut a video between two timestamps (HH:MM:SS or seconds)
+🗜  Compress    4 quality presets: Low / Medium / High / Near-lossless (libx264 CRF)
+🔀  Merge       Combine 2–N videos into one (concat, copy stream)
+📸  Screenshot  Single frame at timestamp OR 5/10 auto-distributed frames
+💧  Watermark   Add text watermark in 5 positions (TL, TR, BL, BR, Center)
+⚡  Speed       Change playback speed: 0.25× 0.5× 0.75× 1.25× 1.5× 2× 4×
+📝  Subtitles   Extract .srt/.ass from video  OR  Embed .srt/.ass into video
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ IMAGE TOOLS  (/resize, /watermark, /ocr)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📏  Resize      Presets: HD 720p, FHD 1080p, 4K, Square 1080, IG Story, Twitter
+                Custom: any WxH you specify
+🗜  Compress    Reduce file size with configurable quality
+💧  Watermark   Text watermark at 5 positions (same as video)
+🔍  OCR         Extract text from image using Tesseract OCR
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ FILE TOOLS  (/archive, /download)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦  Archive     Create ZIP from multiple files
+                Extract: ZIP, RAR, TAR, TAR.GZ, TAR.BZ2
+⬇️  Download    Download from URL:
+                  • YouTube, Instagram, TikTok, Twitter/X, Facebook
+                  • Any direct HTTP/HTTPS link (mp4, mp3, pdf, etc.)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ HOW TO USE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Send any media file → see convert format buttons + tool buttons
+2. Or use a direct command (/trim, /compress, /merge, etc.)
+3. Follow the prompts
+4. Receive your converted file
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/start      Welcome & feature overview
+/help       Full command reference
+/trim       Trim a video
+/compress   Compress video or image
+/merge      Merge multiple videos
+/screenshot Capture frames from video
+/watermark  Add text watermark to video or image
+/speed      Change video speed
+/subtitle   Extract or embed subtitles
+/resize     Resize image or video
+/ocr        Extract text from image
+/archive    Create ZIP or extract archive
+/download   Download from URL
+/cancel     Abort current operation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ LIMITS & DEPENDENCIES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Max file size : 50 MB (Telegram Bot API limit)
+Max output    : 50 MB
+Processing    : up to 120 s (video), 30 s (image/audio)
+
+System deps   : ffmpeg, ffprobe, tesseract-ocr, poppler-utils, unrar
+Python deps   : aiogram, Pillow, img2pdf, pdf2image, pytesseract,
+                yt-dlp, rarfile, requests, python-dotenv
