@@ -178,9 +178,9 @@ HELP_SECTIONS = {
   URL in chat → auto-download (same as /download)""",
 }
 
-MAIN_HELP = """<b>iamconvert</b> — Most powerful Telegram media converter
+MAIN_HELP = """<b>I am Convert</b> — The ultimate Telegram media converter 🚀
 
-<b>Quick start:</b> Just send any file — the bot shows all available options.
+<b>Quick start:</b> Just send any file (Video, Audio, Image, or PDF). I'll analyze it and show you all available options!
 
 Choose a category for detailed help:"""
 
