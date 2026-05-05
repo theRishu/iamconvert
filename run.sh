@@ -4,4 +4,4 @@
 
 # Run the bot
 echo "🚀 Starting IamConvert Bot..."
-/usr/bin/python3 main.py
+python3.14 main.py
