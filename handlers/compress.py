@@ -75,8 +75,7 @@ async def compress_got_file(msg: Message, state: FSMContext):
     wd = workdir(msg.from_user.id)
     src = os.path.join(wd, f"cmp_in_{src_key}.{ext(fname)}")
     await dl(msg.bot, fid, src)
-    dur = await get_duration(src)
-    await state.update_data(src_path=src, src_key=src_key, kind=kind, filename=fname, duration=dur, file_id=fid)
+    await state.update_data(src_path=src, src_key=src_key, kind=kind, filename=fname, file_id=fid)
     await state.set_state(CompressState.waiting_preset)
     await msg.reply("🗜 Choose quality preset:", reply_markup=_preset_kb(src_key))
 

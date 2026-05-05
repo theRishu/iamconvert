@@ -1,6 +1,7 @@
 import os
 import uuid
 import zipfile
+import shutil
 from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
@@ -134,7 +135,7 @@ async def pdf_merge_do(cb: CallbackQuery, state: FSMContext):
             await dl(cb.bot, p["file_id"], fp)
             paths.append(fp)
         dest = os.path.join(wd, f"merged_{session}.pdf")
-        merge_pdfs(paths, dest)
+        await merge_pdfs(paths, dest)
         size_mb = os.path.getsize(dest) / 1024 / 1024
         await status.edit_text(f"✅ Merged! {size_mb:.1f} MB. Sending…")
         with open(dest, "rb") as f:
@@ -158,7 +159,7 @@ async def pdf_text_do(msg: Message, state: FSMContext):
     status = await msg.reply("📄 Extracting text…")
     try:
         await dl(msg.bot, msg.document.file_id, src)
-        text = extract_pdf_text(src)
+        text = await extract_pdf_text(src)
         if not text.strip():
             await status.edit_text("❌ No extractable text found. PDF may be scanned.")
         elif len(text) <= 4000:
@@ -190,7 +191,7 @@ async def pdf_split_do(msg: Message, state: FSMContext):
     status = await msg.reply("✂️ Splitting PDF…")
     try:
         await dl(msg.bot, msg.document.file_id, src)
-        pages = split_pdf(src, split_dir)
+        pages = await split_pdf(src, split_dir)
         zip_path = os.path.join(wd, f"split_{session}.zip")
         with zipfile.ZipFile(zip_path, "w") as zf:
             for p in pages:
@@ -203,11 +204,7 @@ async def pdf_split_do(msg: Message, state: FSMContext):
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
         cleanup(src)
-        import shutil
-        try:
-            shutil.rmtree(split_dir, ignore_errors=True)
-        except Exception:
-            pass
+        shutil.rmtree(split_dir, ignore_errors=True)
         await state.clear()
 
 
@@ -222,7 +219,7 @@ async def pdf_compress_do(msg: Message, state: FSMContext):
     status = await msg.reply("🗜 Compressing PDF…")
     try:
         await dl(msg.bot, msg.document.file_id, src)
-        compress_pdf(src, dest)
+        await compress_pdf(src, dest)
         orig = os.path.getsize(src) / 1024
         new = os.path.getsize(dest) / 1024
         saved = (1 - new / orig) * 100
@@ -244,7 +241,7 @@ async def pdf_rotate_got(msg: Message, state: FSMContext):
     wd = workdir(msg.from_user.id)
     src = os.path.join(wd, f"pdf_rot_{session}.pdf")
     await dl(msg.bot, msg.document.file_id, src)
-    await state.update_data(src_path=src, session=session)
+    await state.update_data(src_path=src, session=session, file_id=msg.document.file_id)
     await state.set_state(PdfState.rotate_choosing)
     await msg.reply("Choose rotation angle:", reply_markup=_ROT_KB(session))
 
@@ -256,12 +253,15 @@ async def pdf_rotate_do(cb: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     await cb.message.edit_reply_markup()
     await cb.answer()
-    src = data.get("src_path")
     wd = workdir(cb.from_user.id)
+    src = data.get("src_path")
+    if not src:
+        src = os.path.join(wd, f"pdf_rot_{session}.pdf")
+        await dl(cb.bot, data["file_id"], src)
     dest = os.path.join(wd, f"rotated_{session}.pdf")
     status = await cb.message.reply(f"🔄 Rotating {deg}°…")
     try:
-        rotate_pdf(src, dest, deg)
+        await rotate_pdf(src, dest, deg)
         await status.edit_text("✅ Done!")
         with open(dest, "rb") as f:
             await cb.message.reply_document(f, filename=f"rotated_{deg}deg.pdf")

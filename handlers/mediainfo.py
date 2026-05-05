@@ -56,7 +56,7 @@ async def info_got_file(msg: Message, state: FSMContext):
     src = os.path.join(wd, f"info_{session}.{ext(fname)}")
     status = await msg.reply("📊 Fetching info…")
     await dl(msg.bot, fid, src)
-    data = {"src_path": src, "filename": fname, "src_key": session}
+    data = {"src_path": src, "filename": fname, "src_key": session, "file_id": fid}
     await _do_info(msg, msg.bot, status, data, session)
     await state.clear()
 
@@ -64,7 +64,7 @@ async def info_got_file(msg: Message, state: FSMContext):
 async def _do_info(msg, bot, status, data, src_key):
     fname = data.get("filename", "file")
     src = data.get("src_path")
-    wd = workdir(msg.chat.id)
+    wd = workdir(msg.from_user.id)
     if not src:
         src = os.path.join(wd, f"info_{src_key}.{ext(fname)}")
         await dl(bot, data["file_id"], src)

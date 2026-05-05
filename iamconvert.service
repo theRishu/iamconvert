@@ -1,0 +1,16 @@
+[Unit]
+Description=IamConvert Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/iamconvert
+ExecStart=/usr/bin/python3.14 main.py
+Restart=always
+RestartSec=5
+# Ensure environment variables are loaded if not using .env
+# EnvironmentFile=/root/iamconvert/.env
+
+[Install]
+WantedBy=multi-user.target
