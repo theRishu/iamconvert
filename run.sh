@@ -1,4 +1,6 @@
-python3.14 -mpip install -r requirements.txt
+git pull
+
+python3.14 -m pip install -r requirements.txt
 
 # Run the bot
 echo "🚀 Starting IamConvert Bot..."
