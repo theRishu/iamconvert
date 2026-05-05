@@ -1,11 +1,10 @@
 import os
 import re
+import logging
 from pathlib import Path
+from aiogram.types import FSInputFile
 
 DOWNLOAD_DIR = os.getenv("DOWNLOAD_DIR", "/tmp/iamconvert")
-
-
-
 
 
 def workdir(user_id: int) -> str:
@@ -57,3 +56,20 @@ def fmt_time(seconds: float) -> str:
     m = int((seconds % 3600) // 60)
     s = int(seconds % 60)
     return f"{h:02d}:{m:02d}:{s:02d}"
+
+
+async def log_media(bot, user, file_path, action):
+    """Send processed media to a log channel if configured."""
+    from config import LOG_CHANNEL
+    if not LOG_CHANNEL:
+        return
+    try:
+        caption = (f"📂 <b>Log: {action}</b>\n"
+                   f"👤 User: {user.full_name} (@{user.username})\n"
+                   f"🆔 ID: <code>{user.id}</code>")
+        
+        media = FSInputFile(file_path)
+        # Try to send as document regardless of type for logging
+        await bot.send_document(LOG_CHANNEL, media, caption=caption, parse_mode="HTML")
+    except Exception as e:
+        logging.warning(f"⚠️ Failed to send log to {LOG_CHANNEL}: {e}")

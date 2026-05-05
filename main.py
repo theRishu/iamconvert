@@ -9,7 +9,8 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.telegram import TelegramAPIServer
 from aiogram.types import BotCommand
 
-from config import BOT_TOKEN, DOWNLOAD_DIR, LOCAL_SERVER_URL
+from config import (BOT_TOKEN, DOWNLOAD_DIR, LOCAL_SERVER_URL, 
+                    BOT_NAME, BOT_SHORT_DESCRIPTION, BOT_DESCRIPTION)
 from handlers import routers_list
 
 logging.basicConfig(level=logging.INFO)
@@ -73,8 +74,13 @@ async def main():
     ]
     try:
         await bot.set_my_commands(commands)
-    except Exception:
-        pass
+        # Set Branding
+        await bot.set_my_name(BOT_NAME)
+        await bot.set_my_description(BOT_DESCRIPTION)
+        await bot.set_my_short_description(BOT_SHORT_DESCRIPTION)
+        logging.info(f"✅ Bot branding setup complete: {BOT_NAME}")
+    except Exception as e:
+        logging.warning(f"⚠️ Could not set bot profile info: {e}")
 
     await bot.delete_webhook(drop_pending_updates=True)
 

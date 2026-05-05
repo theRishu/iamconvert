@@ -10,7 +10,10 @@ rarfile>=4.1
 requests>=2.31.0
 segno>=1.6.1
 python-dotenv>=1.0.0
-# Optional — install separately when needed:
-# rembg>=2.0.50        (remove background AI — heavy ~170 MB model)
-# pyzbar>=0.1.9        (QR reading — needs: brew install zbar)
-# opencv-python-headless>=4.8.0  (QR reading alternative)
+rembg>=2.0.50
+pyzbar>=0.1.9
+opencv-python-headless>=4.8.0
+zxing-cpp>=2.2.0
+pyshorteners>=1.2.2
+aiohttp>=3.9.0
+moviepy>=1.0.3

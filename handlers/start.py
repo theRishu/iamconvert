@@ -6,15 +6,15 @@ from aiogram.types import Message
 router = Router()
 
 WELCOME = (
-    "👋 <b>Welcome to iamconvert!</b>\n\n"
-    "The most powerful media converter bot.\n\n"
-    "<b>Just send any file</b> and I'll show you all available actions.\n\n"
-    "🎬 Video → Convert, Trim, Compress, Screenshot, Watermark, Speed, Subtitles, Merge\n"
-    "🎵 Audio → Convert between MP3, WAV, OGG, FLAC, AAC, M4A\n"
-    "🖼 Image → Convert, Resize, Compress, Watermark, OCR, Sticker\n"
-    "📄 PDF  → Images (per page)\n"
-    "📦 Archive → Create ZIP, Extract ZIP/RAR/TAR\n"
-    "⬇️ Download → YouTube, Instagram, TikTok, direct URLs\n\n"
+    "🚀 <b>Welcome to I am Convert!</b>\n\n"
+    "The ultimate all-in-one media conversion bot.\n\n"
+    "<b>Just send any file</b> (Video, Audio, Image, or PDF) and I'll show you the magic! ✨\n\n"
+    "🎬 <b>Video:</b> Trim, Resize, Compress, Subtitles, Merge, Speed, Reverse, Loop\n"
+    "🎵 <b>Audio:</b> Normalize, Pitch, Fade, Mute, Volume, Add to Video\n"
+    "🖼 <b>Image:</b> BG Removal, Filters, Enhance, Meme, QR, Sticker, PDF conversion\n"
+    "📄 <b>PDF:</b> Merge, Split, Compress, Rotate, Extract Text\n"
+    "📦 <b>Archive:</b> Create or Extract ZIP/RAR/TAR\n"
+    "⬇️ <b>Download:</b> YouTube, Instagram, TikTok, and more!\n\n"
     "Type /help for the full command list."
 )
 
