@@ -14,6 +14,6 @@ rembg>=2.0.50
 pyzbar>=0.1.9
 opencv-python-headless>=4.8.0
 zxing-cpp>=2.2.0
-pyshorteners>=1.2.2
+pyshorteners>=1.0.1
 aiohttp>=3.9.0
 moviepy>=1.0.3

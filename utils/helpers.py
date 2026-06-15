@@ -1,10 +1,12 @@
 import os
 import re
 import logging
+import shutil
 from pathlib import Path
 from aiogram.types import FSInputFile
 
 DOWNLOAD_DIR = os.getenv("DOWNLOAD_DIR", "/tmp/iamconvert")
+LOCAL_SERVER_URL = os.getenv("LOCAL_SERVER_URL", "")
 
 
 def workdir(user_id: int) -> str:
@@ -15,7 +17,11 @@ def workdir(user_id: int) -> str:
 
 async def dl(bot, file_id: str, dest: str) -> str:
     f = await bot.get_file(file_id)
-    await bot.download_file(f.file_path, dest)
+    # Local server returns absolute filesystem path — copy directly to avoid URL double-slash bug
+    if LOCAL_SERVER_URL and f.file_path and f.file_path.startswith("/"):
+        shutil.copy2(f.file_path, dest)
+    else:
+        await bot.download_file(f.file_path, dest)
     return dest
 
 
