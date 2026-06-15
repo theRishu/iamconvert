@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.image_tools import resize_image
@@ -141,8 +141,7 @@ async def _do_resize(msg, bot, state, data, src_key, w, h):
         else:
             await resize_image(src, w, h, dest)
         await status.edit_text("✅ Done! Sending…")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename=f"resized_{w}x{h}.{out_ext}")
+        await msg.reply_document(FSInputFile(dest), filename=f"resized_{w}x{h}.{out_ext}")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

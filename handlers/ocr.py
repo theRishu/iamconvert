@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.image_tools import ocr_image
@@ -62,8 +62,7 @@ async def ocr_got_image(msg: Message, state: FSMContext):
             txt_path = os.path.join(wd, f"ocr_{src_key}.txt")
             with open(txt_path, "w", encoding="utf-8") as f:
                 f.write(text)
-            with open(txt_path, "rb") as f:
-                await msg.reply_document(f, filename="extracted_text.txt")
+            await msg.reply_document(FSInputFile(txt_path), filename="extracted_text.txt")
             cleanup(txt_path)
     except Exception as e:
         await status.edit_text(f"❌ OCR failed:\n<code>{e}</code>", parse_mode="HTML")
@@ -89,8 +88,7 @@ async def _run_ocr(msg, bot, status, data, src_key):
             with open(txt_path, "w") as f:
                 f.write(text)
             await status.edit_text("Sending as file…")
-            with open(txt_path, "rb") as f:
-                await msg.reply_document(f, filename="extracted_text.txt")
+            await msg.reply_document(FSInputFile(txt_path), filename="extracted_text.txt")
             cleanup(txt_path)
     except Exception as e:
         await status.edit_text(f"❌ OCR failed:\n<code>{e}</code>", parse_mode="HTML")

@@ -6,7 +6,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.pdf_tools import merge_pdfs, extract_pdf_text, split_pdf, compress_pdf, rotate_pdf
@@ -138,8 +138,7 @@ async def pdf_merge_do(cb: CallbackQuery, state: FSMContext):
         await merge_pdfs(paths, dest)
         size_mb = os.path.getsize(dest) / 1024 / 1024
         await status.edit_text(f"✅ Merged! {size_mb:.1f} MB. Sending…")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename="merged.pdf")
+        await cb.message.reply_document(FSInputFile(dest), filename="merged.pdf")
         cleanup(dest)
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
@@ -170,8 +169,7 @@ async def pdf_text_do(msg: Message, state: FSMContext):
             with open(txt_path, "w", encoding="utf-8") as f:
                 f.write(text)
             await status.edit_text(f"✅ {len(text)} chars extracted. Sending as .txt file…")
-            with open(txt_path, "rb") as f:
-                await msg.reply_document(f, filename="extracted_text.txt")
+            await msg.reply_document(FSInputFile(txt_path), filename="extracted_text.txt")
             cleanup(txt_path)
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
@@ -197,8 +195,7 @@ async def pdf_split_do(msg: Message, state: FSMContext):
             for p in pages:
                 zf.write(p, os.path.basename(p))
         await status.edit_text(f"✅ {len(pages)} pages split. Sending as ZIP…")
-        with open(zip_path, "rb") as f:
-            await msg.reply_document(f, filename=f"split_{len(pages)}pages.zip")
+        await msg.reply_document(FSInputFile(zip_path), filename=f"split_{len(pages)}pages.zip")
         cleanup(zip_path)
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
@@ -224,8 +221,7 @@ async def pdf_compress_do(msg: Message, state: FSMContext):
         new = os.path.getsize(dest) / 1024
         saved = (1 - new / orig) * 100
         await status.edit_text(f"✅ {orig:.0f} KB → {new:.0f} KB ({saved:.0f}% saved). Sending…")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename="compressed.pdf")
+        await msg.reply_document(FSInputFile(dest), filename="compressed.pdf")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
@@ -263,8 +259,7 @@ async def pdf_rotate_do(cb: CallbackQuery, state: FSMContext):
     try:
         await rotate_pdf(src, dest, deg)
         await status.edit_text("✅ Done!")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename=f"rotated_{deg}deg.pdf")
+        await cb.message.reply_document(FSInputFile(dest), filename=f"rotated_{deg}deg.pdf")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

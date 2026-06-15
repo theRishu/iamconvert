@@ -5,7 +5,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message
+from aiogram.types import Message, FSInputFile
 
 from utils.helpers import workdir, cleanup
 from utils.downloader import download_url
@@ -62,8 +62,7 @@ async def _do_download(msg: Message, state: FSMContext, url: str):
             return
 
         await status.edit_text(f"✅ Downloaded ({size_mb:.1f} MB). Sending…")
-        with open(path, "rb") as f:
-            await msg.reply_document(f, filename=fname, caption=f"Downloaded from {url[:60]}")
+        await msg.reply_document(FSInputFile(path), filename=fname, caption=f"Downloaded from {url[:60]}")
     except Exception as e:
         await status.edit_text(f"❌ Download failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

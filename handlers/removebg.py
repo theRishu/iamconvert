@@ -5,7 +5,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 
@@ -59,8 +59,7 @@ async def removebg_got_file(msg: Message, state: FSMContext):
         dest = os.path.join(wd, f"rmbg_out_{src_key}.png")
         await asyncio.to_thread(_remove_bg, src, dest)
         await status.edit_text("✅ Done! Sending PNG with transparent background…")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename="no_background.png")
+        await msg.reply_document(FSInputFile(dest), filename="no_background.png")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
@@ -78,8 +77,7 @@ async def _do_removebg(msg, bot, status, data, src_key):
     try:
         await asyncio.to_thread(_remove_bg, src, dest)
         await status.edit_text("✅ Done! Sending PNG with transparent background…")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename="no_background.png")
+        await msg.reply_document(FSInputFile(dest), filename="no_background.png")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

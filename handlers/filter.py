@@ -5,7 +5,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.image_effects import apply_filter, FILTERS
@@ -106,8 +106,7 @@ async def filter_do(cb: CallbackQuery, state: FSMContext):
     try:
         await asyncio.to_thread(apply_filter, src, filter_name, dest)
         await status.edit_text("✅ Done! Sending…")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename=f"{filter_name}.{out_e}")
+        await cb.message.reply_document(FSInputFile(dest), filename=f"{filter_name}.{out_e}")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

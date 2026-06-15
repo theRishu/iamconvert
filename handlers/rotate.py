@@ -5,7 +5,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.image_effects import rotate_image
@@ -102,8 +102,7 @@ async def rotate_do(cb: CallbackQuery, state: FSMContext):
             dest = os.path.join(wd, f"rot_out_{src_key}.{out_e}")
             await asyncio.to_thread(rotate_image, src, action, dest)
         await status.edit_text("✅ Done! Sending…")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename=os.path.basename(dest))
+        await cb.message.reply_document(FSInputFile(dest), filename=os.path.basename(dest))
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

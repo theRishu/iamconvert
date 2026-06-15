@@ -5,7 +5,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.archive_tools import create_zip, extract_archive, list_archive
@@ -113,8 +113,7 @@ async def arc_zip_done(cb: CallbackQuery, state: FSMContext):
         await create_zip(paths, dest)
         size_mb = os.path.getsize(dest) / 1024 / 1024
         await status.edit_text(f"✅ ZIP created ({size_mb:.1f} MB). Sending…")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename=f"archive_{session}.zip")
+        await cb.message.reply_document(FSInputFile(dest), filename=f"archive_{session}.zip")
         cleanup(dest)
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
@@ -154,16 +153,14 @@ async def arc_extract(msg: Message, state: FSMContext):
                 extracted_files.append(os.path.join(root, f))
 
         if len(extracted_files) == 1:
-            with open(extracted_files[0], "rb") as f:
-                await msg.reply_document(f, filename=os.path.basename(extracted_files[0]))
+            await msg.reply_document(FSInputFile(extracted_files[0]), filename=os.path.basename(extracted_files[0]))
         else:
             out_zip = os.path.join(wd, f"extracted_{session}.zip")
             with zipfile.ZipFile(out_zip, "w") as zf:
                 for fp in extracted_files:
                     zf.write(fp, os.path.relpath(fp, extract_dir))
             await status.edit_text(f"✅ {len(extracted_files)} files extracted. Sending…")
-            with open(out_zip, "rb") as f:
-                await msg.reply_document(f, filename=f"extracted_{session}.zip")
+            await msg.reply_document(FSInputFile(out_zip), filename=f"extracted_{session}.zip")
             cleanup(out_zip)
 
     except Exception as e_:

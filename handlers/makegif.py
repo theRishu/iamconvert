@@ -5,7 +5,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.image_effects import images_to_gif
@@ -94,8 +94,7 @@ async def gif_fps(cb: CallbackQuery, state: FSMContext):
         await asyncio.to_thread(images_to_gif, paths, dest, fps)
         size_mb = os.path.getsize(dest) / 1024 / 1024
         await status.edit_text(f"✅ GIF ready ({size_mb:.1f} MB)! Sending…")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename="animated.gif")
+        await cb.message.reply_document(FSInputFile(dest), filename="animated.gif")
         cleanup(dest)
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")

@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.video_tools import add_watermark_video
@@ -128,8 +128,7 @@ async def wmk_do(cb: CallbackQuery, state: FSMContext):
         else:
             await add_watermark_image(src, text, position, dest)
         await status.edit_text("✅ Done! Sending…")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename=f"watermarked.{out_ext}")
+        await cb.message.reply_document(FSInputFile(dest), filename=f"watermarked.{out_ext}")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

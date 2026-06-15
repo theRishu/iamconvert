@@ -6,7 +6,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.audio_tools import reverse_video, loop_video, split_video, video_to_videonote
@@ -78,8 +78,7 @@ async def _do_reverse(msg, bot, status, data, src_key):
     try:
         await reverse_video(src, dest)
         await status.edit_text("✅ Done!")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename="reversed.mp4")
+        await msg.reply_document(FSInputFile(dest), filename="reversed.mp4")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
@@ -153,8 +152,7 @@ async def loop_do(cb: CallbackQuery, state: FSMContext):
     try:
         await loop_video(src, dest, times)
         await status.edit_text("✅ Done!")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename=f"looped_{times}x.mp4")
+        await cb.message.reply_document(FSInputFile(dest), filename=f"looped_{times}x.mp4")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
@@ -242,8 +240,7 @@ async def split_do(cb: CallbackQuery, state: FSMContext):
         with zipfile.ZipFile(zip_path, "w") as zf:
             for p in part_paths:
                 zf.write(p, os.path.basename(p))
-        with open(zip_path, "rb") as f:
-            await cb.message.reply_document(f, filename=f"split_{parts}parts.zip")
+        await cb.message.reply_document(FSInputFile(zip_path), filename=f"split_{parts}parts.zip")
         cleanup(zip_path)
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")

@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.video_tools import change_speed
@@ -95,8 +95,7 @@ async def speed_do(cb: CallbackQuery, state: FSMContext):
     try:
         await change_speed(src, speed, dest)
         await status.edit_text(f"✅ Speed {speed}×! Sending…")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename=f"speed_{speed}x.mp4")
+        await cb.message.reply_document(FSInputFile(dest), filename=f"speed_{speed}x.mp4")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

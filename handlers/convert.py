@@ -6,7 +6,7 @@ from aiogram import Router, F
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from config import MAX_FILE_BYTES, DOWNLOAD_DIR
 from utils.helpers import workdir, dl, cleanup, ext
@@ -231,8 +231,7 @@ async def on_format(cb: CallbackQuery, state: FSMContext):
             raise ValueError("Unknown type")
 
         await status.edit_text("✅ Sending…")
-        with open(result, "rb") as f:
-            await cb.message.reply_document(f, filename=os.path.basename(result))
+        await cb.message.reply_document(FSInputFile(result), filename=os.path.basename(result))
 
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")

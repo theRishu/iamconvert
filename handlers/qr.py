@@ -5,7 +5,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 
@@ -39,8 +39,7 @@ async def qr_got_text(msg: Message, state: FSMContext):
     try:
         await asyncio.to_thread(_make_qr_segno, text, dest)
         await status.delete()
-        with open(dest, "rb") as f:
-            await msg.reply_photo(f, caption=f"📱 QR: <code>{text[:100]}</code>", parse_mode="HTML")
+        await msg.reply_photo(FSInputFile(dest), caption=f"📱 QR: <code>{text[:100]}</code>", parse_mode="HTML")
         cleanup(dest)
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")

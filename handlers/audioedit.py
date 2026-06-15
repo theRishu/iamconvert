@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.audio_tools import (mute_video, add_audio_to_video, change_volume,
@@ -104,8 +104,7 @@ async def _do_mute(msg, bot, data, src_key):
     try:
         await mute_video(src, dest)
         await status.edit_text("✅ Done!")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename="muted.mp4")
+        await msg.reply_document(FSInputFile(dest), filename="muted.mp4")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
@@ -152,8 +151,7 @@ async def addaudio_got_audio(msg: Message, state: FSMContext):
         await dl(msg.bot, afid, audio_src)
         await add_audio_to_video(video_src, audio_src, dest)
         await status.edit_text("✅ Done!")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename="with_audio.mp4")
+        await msg.reply_document(FSInputFile(dest), filename="with_audio.mp4")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
@@ -220,8 +218,7 @@ async def vol_do(cb: CallbackQuery, state: FSMContext):
     try:
         await change_volume(src, dest, db)
         await status.edit_text("✅ Done!")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename=f"volume_{db:+.0f}dB.{out_e}")
+        await cb.message.reply_document(FSInputFile(dest), filename=f"volume_{db:+.0f}dB.{out_e}")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
@@ -254,8 +251,7 @@ async def norm_got_file(msg: Message, state: FSMContext):
         await dl(msg.bot, fid, src)
         await normalize_audio(src, dest)
         await status.edit_text("✅ Done!")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename=f"normalized.{ext(fname)}")
+        await msg.reply_document(FSInputFile(dest), filename=f"normalized.{ext(fname)}")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
@@ -309,8 +305,7 @@ async def pitch_do(cb: CallbackQuery, state: FSMContext):
     try:
         await change_pitch(src, semitones, dest)
         await status.edit_text("✅ Done!")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename=f"pitch_{semitones:+.0f}st.{out_e}")
+        await cb.message.reply_document(FSInputFile(dest), filename=f"pitch_{semitones:+.0f}st.{out_e}")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

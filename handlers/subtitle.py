@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.video_tools import extract_subtitles, embed_subtitles
@@ -120,8 +120,7 @@ async def sub_got_subtitle(msg: Message, state: FSMContext):
         await dl(msg.bot, sub_id, sub_src)
         await embed_subtitles(video_src, sub_src, dest)
         await status.edit_text("✅ Done! Sending…")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename="with_subtitles.mp4")
+        await msg.reply_document(FSInputFile(dest), filename="with_subtitles.mp4")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
@@ -146,8 +145,7 @@ async def _do_extract(msg, bot, state, data):
             await extract_subtitles(src, dest_ass)
             out = dest_ass
         await status.edit_text("✅ Done! Sending…")
-        with open(out, "rb") as f:
-            await msg.reply_document(f, filename=os.path.basename(out))
+        await msg.reply_document(FSInputFile(out), filename=os.path.basename(out))
     except Exception as e:
         await status.edit_text(f"❌ No subtitles found or extraction failed:\n<code>{e}</code>",
                                 parse_mode="HTML")

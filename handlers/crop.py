@@ -5,7 +5,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.image_effects import crop_image_ratio, crop_image_coords, CROP_RATIOS
@@ -122,8 +122,7 @@ async def crop_coords(msg: Message, state: FSMContext):
     try:
         await asyncio.to_thread(crop_image_coords, src, left, top, right, bottom, dest)
         await status.edit_text("✅ Done! Sending…")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename=f"cropped.{out_e}")
+        await msg.reply_document(FSInputFile(dest), filename=f"cropped.{out_e}")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
@@ -144,8 +143,7 @@ async def _do_crop_ratio(msg, bot, state, data, src_key, ratio):
     try:
         await asyncio.to_thread(crop_image_ratio, src, ratio, dest)
         await status.edit_text("✅ Done! Sending…")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename=f"cropped_{ratio.replace(':','x')}.{out_e}")
+        await msg.reply_document(FSInputFile(dest), filename=f"cropped_{ratio.replace(':','x')}.{out_e}")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

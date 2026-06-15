@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.video_tools import merge_videos
@@ -112,8 +112,7 @@ async def merge_do(cb: CallbackQuery, state: FSMContext):
 
         size_mb = os.path.getsize(dest) / 1024 / 1024
         await status.edit_text(f"✅ Merged! {size_mb:.1f} MB. Sending…")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename="merged.mp4",
+        await cb.message.reply_document(FSInputFile(dest), filename="merged.mp4",
                                              caption=f"{len(src_paths)} videos merged")
         cleanup(dest)
     except Exception as e:

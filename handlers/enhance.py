@@ -5,7 +5,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.image_effects import enhance_image, ENHANCE_MAP, ENHANCE_LEVELS
@@ -122,8 +122,7 @@ async def enhance_do(cb: CallbackQuery, state: FSMContext):
     try:
         await asyncio.to_thread(enhance_image, src, prop, level, dest)
         await status.edit_text("✅ Done! Sending…")
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename=f"enhanced.{out_e}")
+        await cb.message.reply_document(FSInputFile(dest), filename=f"enhanced.{out_e}")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

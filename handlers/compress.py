@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.video_tools import compress_video
@@ -119,8 +119,7 @@ async def compress_do(cb: CallbackQuery, state: FSMContext):
         await status.edit_text(
             f"✅ Compressed! {orig_size:.1f} MB → {new_size:.1f} MB ({saved:.0f}% saved)\nSending…"
         )
-        with open(dest, "rb") as f:
-            await cb.message.reply_document(f, filename=f"compressed.{ext(dest)}")
+        await cb.message.reply_document(FSInputFile(dest), filename=f"compressed.{ext(dest)}")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

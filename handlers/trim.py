@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext, parse_time, fmt_time
 from utils.video_tools import trim_video, get_duration
@@ -121,8 +121,7 @@ async def trim_got_end(msg: Message, state: FSMContext):
     try:
         await trim_video(src, start, end, dest)
         await status.edit_text("✅ Done! Sending…")
-        with open(dest, "rb") as f:
-            await msg.reply_document(f, filename="trimmed.mp4",
+        await msg.reply_document(FSInputFile(dest), filename="trimmed.mp4",
                                      caption=f"Trimmed {fmt_time(start)} → {fmt_time(end)}")
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
