@@ -5,7 +5,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 
 from utils.helpers import workdir, dl, cleanup, ext
 from utils.image_effects import make_meme
@@ -90,8 +90,7 @@ async def meme_got_bottom(msg: Message, state: FSMContext):
     try:
         await asyncio.to_thread(make_meme, src, top, bottom, dest)
         await status.edit_text("✅ Done!")
-        with open(dest, "rb") as f:
-            await msg.reply_photo(f)
+        await msg.reply_photo(FSInputFile(dest))
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:

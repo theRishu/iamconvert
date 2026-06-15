@@ -273,8 +273,7 @@ async def videonote_got_file(msg: Message, state: FSMContext):
         await dl(msg.bot, fid, src)
         await video_to_videonote(src, dest)
         await status.edit_text("✅ Done!")
-        with open(dest, "rb") as f:
-            await msg.reply_video_note(f)
+        await msg.reply_video_note(FSInputFile(dest))
     except Exception as e:
         await status.edit_text(f"❌ Failed:\n<code>{e}</code>", parse_mode="HTML")
     finally:
