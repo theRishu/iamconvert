@@ -60,9 +60,9 @@ async def extract_audio(src: str, dest: str):
 
 
 async def trim_video(src: str, start: float, end: float, dest: str):
-    # -ss before -i for fast seeking
+    # Re-encode to avoid corruption from keyframe misalignment with stream copy
     await _run(["ffmpeg", "-y", "-ss", str(start), "-to", str(end), "-i", src,
-                "-c", "copy", dest])
+                "-c:v", "libx264", "-c:a", "aac", "-avoid_negative_ts", "make_zero", dest])
     return dest
 
 

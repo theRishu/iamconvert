@@ -132,34 +132,39 @@ async def _handle_media(msg: Message, state: FSMContext,
     )
 
 
-# ── Incoming media (only when no active state) ────────────────────────────────
+# ── Incoming media (idle or waiting for format — new file restarts flow) ──────
 
-@router.message(F.document, StateFilter(None))
+@router.message(F.document, StateFilter(None, CvtState.waiting_fmt))
 async def on_document(msg: Message, state: FSMContext):
+    await state.clear()
     doc = msg.document
     await _handle_media(msg, state, doc.file_id, doc.file_name or "file", doc.file_size or 0)
 
 
-@router.message(F.video, StateFilter(None))
+@router.message(F.video, StateFilter(None, CvtState.waiting_fmt))
 async def on_video(msg: Message, state: FSMContext):
+    await state.clear()
     v = msg.video
     await _handle_media(msg, state, v.file_id, "video.mp4", v.file_size or 0)
 
 
-@router.message(F.audio, StateFilter(None))
+@router.message(F.audio, StateFilter(None, CvtState.waiting_fmt))
 async def on_audio(msg: Message, state: FSMContext):
+    await state.clear()
     a = msg.audio
     await _handle_media(msg, state, a.file_id, a.file_name or "audio.mp3", a.file_size or 0)
 
 
-@router.message(F.voice, StateFilter(None))
+@router.message(F.voice, StateFilter(None, CvtState.waiting_fmt))
 async def on_voice(msg: Message, state: FSMContext):
+    await state.clear()
     v = msg.voice
     await _handle_media(msg, state, v.file_id, "voice.ogg", v.file_size or 0)
 
 
-@router.message(F.photo, StateFilter(None))
+@router.message(F.photo, StateFilter(None, CvtState.waiting_fmt))
 async def on_photo(msg: Message, state: FSMContext):
+    await state.clear()
     photo = msg.photo[-1]
     await _handle_media(msg, state, photo.file_id, "photo.jpg", photo.file_size or 0)
 

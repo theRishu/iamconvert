@@ -19,6 +19,7 @@ _MODE_KB = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="✂️ Split PDF",          callback_data="pdf:split"),
      InlineKeyboardButton(text="🗜 Compress PDF",       callback_data="pdf:compress")],
     [InlineKeyboardButton(text="🔄 Rotate Pages",      callback_data="pdf:rotate")],
+    [InlineKeyboardButton(text="🖼 Images → PDF",       callback_data="pdf:img2pdf")],
 ])
 
 _DONE_KB = InlineKeyboardMarkup(inline_keyboard=[[
@@ -41,6 +42,7 @@ class PdfState(StatesGroup):
     compress_waiting = State()
     rotate_waiting = State()
     rotate_choosing = State()
+    img2pdf_collecting = State()
 
 
 @router.message(Command("pdf"), StateFilter("*"))
